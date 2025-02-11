@@ -5,9 +5,10 @@ import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
-import Button from "@/components/ui/button";
+import Button from "@/components/ui/buttons";
 import Currency from "@/components/ui/currency";
 import useCart from "@/hooks/use-cart";
+import { TruckIcon } from "lucide-react";
 
 const Summary = () => {
   const searchParams = useSearchParams();
@@ -41,10 +42,10 @@ const Summary = () => {
 
   return (
     <div className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
-      <h2 className="tetx-lg font-medium text-gray-900">Order Summary </h2>
+      <h2 className="tetx-lg font-medium text-gray-900 -mb-3">Order Summary </h2>
       <div className="mt-6 space-y-4">
         <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-          <div className="text-base font-medium text-gray-900">Order Total</div>
+          <div className="text-base font-medium text-gray-900 mt-2">Order Total</div>
           <Currency value={totalPrice} />
         </div>
       </div>
@@ -55,8 +56,16 @@ const Summary = () => {
       >
         Checkout
       </Button>
+
+      <div className="flex items-center mt-10 gap-3 text-sm">
+        <TruckIcon />
+        <div>
+          <p>Delivery in 14-21 days</p>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default Summary;
+

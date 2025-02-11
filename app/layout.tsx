@@ -21,11 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ModalProvider />
-        <ToastProvider/>
-        <Navbar />
-        {children}
-        <Footer />
+          <ModalProvider />
+          <ToastProvider />
+          <Navbar />
+          {children}
+          <Footer />
       </body>
     </html>
   );
