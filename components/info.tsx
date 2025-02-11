@@ -58,7 +58,7 @@
 
 import { Product } from "@/types";
 import Currency from "./ui/currency";
-import Button from "./ui/buttons";
+import Button from "./ui/button";
 import { ShoppingCart } from "lucide-react";
 import useCart from "@/hooks/use-cart";
 
