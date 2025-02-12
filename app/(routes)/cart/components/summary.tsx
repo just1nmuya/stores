@@ -60,7 +60,7 @@ const Summary = () => {
       <div className="flex items-center mt-10 gap-3 text-sm">
         <TruckIcon />
         <div>
-          <p>Delivery in 14-21 days</p>
+          <p>Fast Delivery</p>
         </div>
       </div>
     </div>
