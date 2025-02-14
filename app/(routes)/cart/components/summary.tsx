@@ -25,7 +25,7 @@ const Summary = () => {
       toast.success("Payment completed.");
       removeAll();
     }
-    
+
     if (searchParams.get("canceled")) {
       toast.error("Something went wrong");
     }
@@ -106,9 +106,9 @@ const Summary = () => {
           id="paymentMethod"
           value={paymentMethod}
           onChange={(e) => setPaymentMethod(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
         >
-          <option value="stripe">Stripe</option>
+          <option value="stripe">Card</option>
           <option value="mpesa">M‑Pesa</option>
         </select>
       </div>
@@ -128,7 +128,7 @@ const Summary = () => {
             placeholder="07XX XXX XXX"
             value={mpesaPhone}
             onChange={(e) => setMpesaPhone(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+            className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
           />
         </div>
       )}
@@ -138,10 +138,10 @@ const Summary = () => {
         onClick={onCheckout}
         className="w-full mt-6"
       >
-        Checkout
+        Pay
       </Button>
 
-      <div className="flex items-center mt-10 gap-3 text-sm">
+      <div className="flex items-center mt-5 gap-2 text-sm">
         <TruckIcon />
         <div>
           <p>Fast Delivery</p>
