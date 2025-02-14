@@ -9,7 +9,6 @@ interface GalleryTabProps {
 
 const GalleryTab: React.FC<GalleryTabProps> = ({ image }) => {
   return (
-    <div>
       <Tab className="relative flex aspect-square cursor-pointer items-center justify-center rounded-md bg-white">
         {({ selected }) => (
           <div>
@@ -23,14 +22,13 @@ const GalleryTab: React.FC<GalleryTabProps> = ({ image }) => {
             </span>
             <span
               className={cn(
-                "absolute iset-0 rounded-md ring-2 ring-offset-2",
+                "absolute inset-0 rounded-md ring-2 ring-offset-2",
                 selected ? "ring-black" : "ring-transparent"
               )}
             />
           </div>
         )}
       </Tab>
-    </div>
   );
 };
 
