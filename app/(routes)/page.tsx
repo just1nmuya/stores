@@ -103,7 +103,7 @@ const HomePage = async () => {
             {products.length > 0 ? (
               <ProductList title="Featured Items" items={products.slice(0, 30)} />
             ) : (
-              <p className="text-center text-red-500">No featured products available</p>
+              <p className="text-center text-black-500">No featured products available</p>
             )}
           </div>
         </div>
