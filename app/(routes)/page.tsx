@@ -32,7 +32,7 @@ const HomePage = async () => {
   }
 
   try {
-    billboard = await getBillboard("b90a7433-2332-4d06-bd85-c1c1f98fdcad");
+    billboard = await getBillboard("4b6b8b09-6625-4021-b9e8-adecfa6df003");
   } catch (error) {
     console.error("Error fetching billboard:", error);
     billboard = null;
