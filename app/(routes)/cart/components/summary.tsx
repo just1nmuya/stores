@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import Button from "@/components/ui/buttons";
 import Currency from "@/components/ui/currency";
 import useCart from "@/hooks/use-cart";
-import { TruckIcon } from "lucide-react";
+import { CheckCircle, Loader2, TruckIcon } from "lucide-react";
 
 const Summary = () => {
   const searchParams = useSearchParams();
@@ -122,88 +122,108 @@ const Summary = () => {
   };
 
   return (
-    <div className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
-      <h2 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
-      <div className="mt-6 space-y-4">
-        <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-          <div className="text-base font-medium text-gray-900">Order Total</div>
+    <div className="mt-16 rounded-xl bg-white px-6 py-8 shadow-lg border border-gray-100 lg:col-span-5 lg:mt-0">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200">
+        Order Summary
+      </h2>
+
+      <div className="space-y-4">
+        <div className="flex items-center justify-between py-4 border-b border-gray-100 -mt-5">
+          <span className="text-lg font-semibold text-gray-700">Total</span>
           <Currency value={totalPrice} />
         </div>
       </div>
 
-      <div className="mt-6">
-        <label
-          htmlFor="paymentMethod"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Payment Method
-        </label>
-        <select
-          id="paymentMethod"
-          value={paymentMethod}
-          onChange={(e) => setPaymentMethod(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
-        >
-          <option value="stripe">Card</option>
-          <option value="mpesa">M‑Pesa</option>
-        </select>
-      </div>
-
-      {paymentMethod === "mpesa" && (
-        <>
-          <div className="mt-4">
-            <label
-              htmlFor="mpesaPhone"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Phone Number for M‑Pesa
-            </label>
-            <input
-              type="tel"
-              id="mpesaPhone"
-              placeholder="07XX XXX XXX"
-              value={mpesaPhone}
-              onChange={(e) => setMpesaPhone(e.target.value)}
-              className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
-            />
-          </div>
-          <div className="mt-4">
-            <label
-              htmlFor="address"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Delivery Address
-            </label>
-            <input
-              type="text"
-              id="address"
-              placeholder="Enter your delivery address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
-            />
-          </div>
-        </>
-      )}
-
-      <Button
-        disabled={items.length === 0}
-        onClick={onCheckout}
-        className="w-full mt-6"
-      >
-        Pay
-      </Button>
-
-      {orderStatus && (
-        <div className="mt-4 text-center text-lg text-gray-800">
-          {orderStatus}
+      <div className="mt-5 space-y-6">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Payment Method
+          </label>
+          <select
+            id="paymentMethod"
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+          >
+            <option value="stripe" className="p-2">
+              💳 Card (Ksh.65+)
+            </option>
+            <option value="mpesa" className="p-2">
+              📱 M‑Pesa
+            </option>
+          </select>
         </div>
-      )}
 
-      <div className="flex items-center mt-5 gap-2 text-sm">
-        <TruckIcon />
-        <div>
-          <p>Fast Delivery</p>
+        {paymentMethod === "mpesa" && (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                M‑Pesa Phone Number
+              </label>
+              <input
+                type="tel"
+                placeholder="07XX XXX XXX"
+                value={mpesaPhone}
+                onChange={(e) => setMpesaPhone(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Delivery Address
+              </label>
+              <input
+                type="text"
+                placeholder="Postal Code and City"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+              />
+            </div>
+          </div>
+        )}
+
+        <Button
+          disabled={
+            items.length === 0 ||
+            (paymentMethod === "mpesa" && (!mpesaPhone || !address))
+          }
+          onClick={onCheckout}
+          className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white rounded-lg transition-all transform hover:scale-[1.02]"
+        >
+          {orderStatus.includes("Awaiting") ? (
+            <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+          ) : (
+            `Pay ${paymentMethod === "mpesa" ? "via M‑Pesa" : "Now"}`
+          )}
+        </Button>
+
+        {orderStatus && (
+          <div
+            className={`p-4 rounded-lg ${
+              orderStatus.includes("confirmed")
+                ? "bg-green-50 text-green-700"
+                : "bg-blue-50 text-blue-700"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              {orderStatus.includes("confirmed") ? (
+                <CheckCircle className="h-5 w-5" />
+              ) : (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              )}
+              <span>{orderStatus}</span>
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center justify-center gap-3 mt-6 p-4 bg-green-50 rounded-lg">
+          <TruckIcon className="h-6 w-6 text-green-600" />
+          <div className="text-sm text-green-700">
+            <p className="font-medium">Fast Delivery</p>
+            <p>Estimated 1-3 business days</p>
+          </div>
         </div>
       </div>
     </div>
