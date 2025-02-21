@@ -68,8 +68,8 @@ const HomePage = async () => {
         </div>
         {/* Categories Carousel */}
         <div className="pt-20 ">
-          <div className="text-center mb-14">
-            <h2 className="text-4xl font-bold text-gray-900 relative inline-block">
+          <div className="text-center mb-12 -mt-14">
+            <h2 className="text-3xl font-bold text-gray-900 relative inline-block">
               Explore Categories
               <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-purple-500 transform translate-y-2"></span>
             </h2>
