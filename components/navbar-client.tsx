@@ -21,12 +21,12 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="border-b fixed top-0 left-0 w-full bg-white z-50 shadow-sm">
+    <div className="fixed top-0 left-0 w-full bg-black z-50 shadow-sm">
       <div className="relative px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         {/* Store Name - Visible on all views */}
         <div className="flex items-center justify-start md:justify-center md:absolute md:left-0 w-full md:w-auto">
           <Link href="/" className="flex gap-x-2">
-            <div className="font-bold text-xl sm:ml-3 lg:ml-5">STORE</div>
+            <div className="font-bold text-xl sm:ml-3 lg:ml-5 text-white">STORE</div>
           </Link>
         </div>
 
@@ -43,17 +43,17 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
             className="flex flex-col items-center justify-center space-y-1"
           >
             <span
-              className={`block w-6 h-0.5 bg-black transition-all duration-300 ${
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
                 isMobileMenuOpen ? "rotate-45 translate-y-2" : ""
               }`}
             ></span>
             <span
-              className={`block w-6 h-0.5 bg-black transition-all duration-300 ${
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
                 isMobileMenuOpen ? "opacity-0" : "opacity-100"
               }`}
             ></span>
             <span
-              className={`block w-6 h-0.5 bg-black transition-all duration-300 ${
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
                 isMobileMenuOpen ? "-rotate-45 -translate-y-2" : ""
               }`}
             ></span>
