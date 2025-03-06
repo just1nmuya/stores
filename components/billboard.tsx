@@ -1,22 +1,79 @@
-import { Billboard as BillboardType } from "@/types";
+"use client"
+
+import type React from "react"
+
+import type { Billboard as BillboardType } from "@/types"
+import { motion } from "framer-motion"
 
 interface BillboardProps {
-  data: BillboardType;
+  data: BillboardType
 }
 
 const Billboard: React.FC<BillboardProps> = ({ data }) => (
-  <div className="">
-    <div
+  <div className="relative overflow-hidden">
+    {/* Background Image with Parallax Effect */}
+    <motion.div
+      initial={{ scale: 1.1 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse", ease: "linear" }}
       style={{ backgroundImage: `url(${data?.imageUrl})` }}
-      className="relative aspect-[.6] md:aspect-[2.1/1] overflow-hidden bg-cover"
-    >
-      <div className="h-full w-full flex flex-col justify-center items-center text-center gap-y-8">
-        <div className="font-bold text-4xl sm:text-5xl lg:text-7xl sm:max-w-xl max-w-xs text-black">
-          {data.label}
-        </div>
-      </div>
-    </div>
-  </div>
-);
+      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+    />
 
-export default Billboard;
+    {/* Gradient Overlay */}
+    <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+
+    {/* Content Container */}
+    <div className="relative z-10 flex flex-col justify-center items-start h-[70vh] md:h-[60vh] lg:h-[80vh] px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1, delay: 0.2 }}
+        className="space-y-4 md:space-y-6"
+      >
+       
+
+        {/* Main Text */}
+        <h1 className="font-bold text-4xl sm:text-5xl lg:text-7xl xl:text-8xl text-white leading-tight tracking-tight">
+          {data.label.split(" ").map((word, index) => (
+            <motion.span
+              key={index}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 + index * 0.1 }}
+              className="inline-block mr-4"
+            >
+              {word}
+            </motion.span>
+          ))}
+        </h1>
+
+        {/* Decorative Line */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1, delay: 1 }}
+          className="w-24 h-1 bg-white"
+        />
+      </motion.div>
+    </div>
+
+    {/* Decorative Elements */}
+    <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent" />
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1, delay: 1.2 }}
+      className="absolute top-8 left-8 w-24 h-24 border-l-2 border-t-2 border-white/30"
+    />
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1, delay: 1.4 }}
+      className="absolute bottom-8 right-8 w-24 h-24 border-r-2 border-b-2 border-white/30"
+    />
+  </div>
+)
+
+export default Billboard
+
