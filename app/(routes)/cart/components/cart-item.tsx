@@ -103,19 +103,19 @@ const CartItem: React.FC<CartItemProps> = ({ data }) => {
         layout
       >
         <motion.div
-          className="relative h-24 w-24 rounded-md overflow-hidden sm:h-48 sm:w-48"
+          className="relative h-24 w-24 rounded-md overflow-hidden sm:h-48 sm:w-48 mt-5"
           whileHover="hover"
           variants={imageVariants}
         >
           <Image fill src={data.images[0].url || "/placeholder.svg"} alt="" className="object-cover object-center" />
         </motion.div>
-        <div className="relative ml-4 flex flex-1 flex-col justify-between sm:ml-6">
+        <div className="relative ml-4 flex flex-1 flex-col justify-between sm:ml-6 ">
           <div className="absolute z-10 right-0 top-0">
-            <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap">
+            <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap" className="mt-4">
               <IconButton onClick={onRemove} icon={<X size={15} />} />
             </motion.div>
           </div>
-          <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
+          <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0 mt-5">
             <div className="flex justify-between">
               <motion.p
                 className="text-lg font-semibold text-black"

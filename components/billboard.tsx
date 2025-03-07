@@ -10,7 +10,7 @@ interface BillboardProps {
 }
 
 const Billboard: React.FC<BillboardProps> = ({ data }) => (
-  <div className="relative overflow-hidden">
+  <div className="relative overflow-hidden mt-16">
     {/* Background Image with Parallax Effect */}
     <motion.div
       initial={{ scale: 1.1 }}

@@ -22,7 +22,7 @@ const CartPage = () => {
   return (
     <div className="bg-white">
       <Container>
-        <div className="px-4 py-16 sm:px-6 lg:px-8 -mt-10">
+        <div className="px-4 py-16 sm:px-6 lg:px-8 mt-10">
           <h1 className="text-3xl font-bold text-black">Shopping Cart</h1>
           <div className="mt-7 lg:grid lg:grid-cols-12 lg:items-start gap-x-12">
             <div className="lg:col-span-7 ">
