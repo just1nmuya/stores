@@ -214,7 +214,7 @@ const Summary = () => {
               }}
             >
               <option value="stripe" className="p-2">
-                 Card (Ksh.65+)
+                 Card
               </option>
               <option value="mpesa" className="p-2">
                  M‑Pesa
