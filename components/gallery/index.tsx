@@ -20,7 +20,7 @@ const Gallery: React.FC<GalleryProps> = ({ images, isInModal = false }) => {
   return (
     <Tab.Group
       as="div"
-      className={`flex flex-col space-y-4 sm:flex-col-reverse md:flex-row md:space-x-4 md:space-y-0 ${isInModal ? "mt-0" : "-mt-9"}`}
+      className={`flex flex-col space-y-4 sm:flex-col-reverse md:flex-row md:space-x-4 md:space-y-0 ${isInModal}`}
       selectedIndex={selectedIndex}
       onChange={setSelectedIndex}
     >

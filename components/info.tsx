@@ -28,7 +28,7 @@ const Info: React.FC<InfoProps> = ({ data, showDescription = true, isCompact = f
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`bg-white ${isCompact ? "p-4" : "p-8"} rounded-xl shadow-md ${!isCompact && "-mt-8"}`}
+      className={`bg-white ${isCompact ? "p-4" : "p-8"} rounded-xl shadow-md ${!isCompact}`}
     >
       <h1 className={`${isCompact ? "text-xl" : "text-3xl"} font-bold text-gray-900 mb-2`}>{data.name}</h1>
       <div className="mt-2 flex items-end justify-between">
