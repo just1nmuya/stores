@@ -4,10 +4,11 @@ import getProducts from "@/components/actions/get-products";
 import getSizes from "@/components/actions/get-sizes";
 import Billboard from "@/components/billboard";
 import Container from "@/components/ui/container";
-import Filter from "./components/filter";
+// import Filter from "./components/filter";
 import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
-import MobileFilters from "./components/mobile-filters";
+// import MobileFilters from "./components/mobile-filters";
+import ProductFilters from "@/components/product-filter";
 
 export const revalidate = 0;
 
@@ -39,21 +40,22 @@ export default async function CategoryPage({
     <div className="bg-white">
       <Container>
         <div className="mb-8 text-black">
-        <Billboard data={category.billboard} />
+          <Billboard data={category.billboard} />
         </div>
-        <div className="px-4 sm:px-6 lg:px-8 pb-24">
-          <div className="lg:grid lg:grid-cols-5 lg:gap-x-8">
-            <MobileFilters sizes={sizes} colors={colors} />
-            <div className="hidden lg:block mt-5">
-              <Filter valueKey="sizeId" name="Sizes" data={sizes} />
-              <Filter valueKey="colorId" name="Colors" data={colors} />
-            </div>
-            <div className="mt-6 lg:col-span-4 lg:mt-0">
-              {products.length === 0 && <NoResults />}
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {products.map((item) => (
-                  <ProductCard key={item.id} data={item} />
-                ))}
+        <div className="container mx-auto px-4 py-8">
+          <div className="space-y-8 max-w-[1200px] mx-auto">
+            <ProductFilters sizes={sizes} colors={colors} />
+
+            {/* Products grid would go here */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {/* Product cards */}
+              <div className="mt-6 lg:col-span-4 lg:mt-0">
+                {products.length === 0 && <NoResults />}
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {products.map((item) => (
+                    <ProductCard key={item.id} data={item} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
