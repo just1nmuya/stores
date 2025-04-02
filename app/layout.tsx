@@ -4,7 +4,7 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css";
 import Navbar from "@/components/navbar";
-import ModalProvider from "@/providers/modal-provider";
+// import ModalProvider from "@/providers/modal-provider";
 import ToastProvider from "@/providers/toast-provider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={inter.className}>
           <Analytics/>
           <SpeedInsights/>
-          <ModalProvider />
+          {/* <ModalProvider /> */}
           <ToastProvider />
           <Navbar />
           {children}
