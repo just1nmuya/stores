@@ -558,7 +558,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
                 >
                   <Link
                     href="/shop"
-                    className="block text-xl font-semibold tracking-wide py-2 hover:text-gray-300 transition-colors"
+                    className="block uppercase text-xl font-semibold tracking-wide py-2 hover:text-gray-300 transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Shop
@@ -590,7 +590,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
                 >
                   <Link
                     href="/info"
-                    className="block text-xl font-semibold tracking-wide py-2 hover:text-gray-300 transition-colors"
+                    className="block uppercase text-xl font-semibold tracking-wide py-2 hover:text-gray-300 transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Info
