@@ -574,7 +574,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
                       <Link
                         key={category.id}
                         href={`/category/${category.id}`}
-                        className="block text-base tracking-wide py-1 hover:text-gray-300 transition-colors"
+                        className="block uppercase text-base tracking-wide py-1 hover:text-gray-300 transition-colors"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {category.name}
