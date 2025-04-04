@@ -17,7 +17,7 @@ export default async function ShopPage() {
   return (
     <div className="min-h-screen pt-32 md:pt-40 bg-white">
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-24">
-        <h1 className="text-3xl uppercase font-medium mb-16 -mt-7">Shop All</h1>
+        <h1 className="text-xl uppercase font-medium mb-16 -mt-10">Shop All</h1>
 
         {products.length > 0 ? (
           <ProductList

@@ -1,306 +1,378 @@
-"use client";
+"use client"
 
-import type React from "react";
+import type React from "react"
 
-import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
-import { Mail, MapPin } from "lucide-react";
+import { useState, useRef } from "react"
+import { motion, AnimatePresence, useInView } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import { Mail, MapPin, ArrowRight, CheckCircle2 } from "lucide-react"
 
-const ContactForm = () => {
+export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
-  });
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "error" | "success"
-  >("idle");
-  const [error, setError] = useState<string>("");
+  })
+  const [status, setStatus] = useState<"idle" | "loading" | "error" | "success">("idle")
+  const [error, setError] = useState<string>("")
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
-  };
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, amount: 0.2 })
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target
+    setFormData((prev) => ({ ...prev, [id]: value }))
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus("loading");
+    e.preventDefault()
+    setStatus("loading")
     try {
-      // Ensure you construct the URL correctly (e.g., no extraneous contactId if creating a new record)
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/contacts`, // Use the correct endpoint
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData), // Ensure formData has valid values
-        }
-      );
+      // Simulate API call with a delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      if (!res.ok) throw new Error("Submission failed");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
 
-      setStatus("success");
-      setFormData({ name: "", email: "", message: "" });
+      if (!res.ok) throw new Error("Submission failed")
+
+      setStatus("success")
+      setFormData({ name: "", email: "", message: "" })
     } catch (err) {
-      console.error(err);
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setStatus("error");
+      console.error(err)
+      setError(err instanceof Error ? err.message : "An error occurred")
+      setStatus("error")
     }
-  };
+  }
 
-  return (
-    <div className="bg-white shadow-md rounded-lg p-6 space-y-6">
-      <h3 className="text-2xl font-bold text-gray-800">Send Us a Message</h3>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
-            placeholder="Your Name"
-            required
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
-            placeholder="Your Email"
-            required
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="message"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Message
-          </label>
-          <textarea
-            id="message"
-            rows={4}
-            value={formData.message}
-            onChange={handleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-1"
-            placeholder="Your Message"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={status === "loading"}
-          className="w-full rounded-md bg-blue-600 py-2 text-white hover:bg-blue-700 focus:outline-none"
-        >
-          {status === "loading" ? "Sending..." : "Send Message"}
-        </button>
-        {status === "error" && <p className="text-red-500">{error}</p>}
-        {status === "success" && <p>Message sent successfully!</p>}
-      </form>
-    </div>
-  );
-};
-
-interface ContactCardProps {
-  title: string;
-  details: string[];
-  icon: React.ReactNode;
-  gradient: string;
-  index: number;
-}
-
-function ContactCard({
-  title,
-  details,
-  icon,
-  gradient,
-  index,
-}: ContactCardProps) {
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 80,
-        damping: 12,
-        delay: 0.2 * i + 0.4,
-      },
-    }),
-  };
-
-  return (
-    <motion.div
-      className="flex items-start gap-6"
-      variants={cardVariants}
-      custom={index}
-    >
-      <div className="flex-shrink-0">
-        <div
-          className={`w-12 h-12 ${gradient} rounded-lg flex items-center justify-center`}
-        >
-          {icon}
-        </div>
-      </div>
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-        {details.map((detail, i) => (
-          <p key={i} className="text-gray-600 mt-1">
-            {detail}
-          </p>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
-export default function GetInTouch() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
-
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
       },
     },
-  };
+  }
 
-  const titleVariants = {
-    hidden: { y: -20, opacity: 0 },
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 10,
-        delay: 0.2,
+        damping: 15,
       },
     },
-  };
+  }
 
-  const mapVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: {
+  const formItemVariants = {
+    hidden: { x: -10, opacity: 0 },
+    visible: (i: number) => ({
+      x: 0,
       opacity: 1,
-      scale: 1,
       transition: {
         type: "spring",
-        stiffness: 70,
-        damping: 14,
-        delay: 0.8,
+        stiffness: 100,
+        damping: 15,
+        delay: i * 0.1,
+      },
+    }),
+  }
+
+  const successVariants = {
+    hidden: { scale: 0.8, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
       },
     },
-  };
-
-  const contactInfo = [
-    {
-      title: "Customer Support",
-      details: ["0728 038 778", "justinnjoroge426@gmail.com"],
-      icon: <Mail className="w-6 h-6 text-white" />,
-      gradient: "bg-gradient-to-br from-purple-400 to-pink-500",
+    exit: {
+      scale: 0.8,
+      opacity: 0,
+      transition: {
+        duration: 0.2,
+      },
     },
-    {
-      title: "Visit Us",
-      details: ["Nairobi, Kenya", "Open Mon-Fri: 9AM - 5PM"],
-      icon: <MapPin className="w-6 h-6 text-white" />,
-      gradient: "bg-gradient-to-br from-pink-400 to-red-500",
-    },
-  ];
+  }
 
   return (
-    <div className="py-24 bg-gradient-to-b from-pink-50 to-blue-50" ref={ref}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <motion.div
-          className="text-center mb-16"
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={containerVariants}
-        >
-          <motion.h2
-            className="text-3xl md:text-4xl font-bold text-gray-900 relative inline-block"
-            variants={titleVariants}
-          >
-            Get in Touch
-            <motion.span
-              className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 transform translate-y-2"
-              initial={{ scaleX: 0 }}
-              animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-            ></motion.span>
-          </motion.h2>
-          <motion.p
-            className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto"
-            variants={titleVariants}
-          >
-            Have questions or need assistance? We are here to help!
-          </motion.p>
-        </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <motion.div
-            className="space-y-8"
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={containerVariants}
-          >
-            <div className="space-y-6">
-              {contactInfo.map((info, index) => (
-                <ContactCard
-                  key={index}
-                  title={info.title}
-                  details={info.details}
-                  icon={info.icon}
-                  gradient={info.gradient}
-                  index={index}
-                />
-              ))}
-            </div>
-            <motion.div
-              className="w-full aspect-video rounded-xl overflow-hidden shadow-lg"
-              variants={mapVariants}
-            >
-              <iframe
-                width="100%"
-                height="100%"
-                className="border-0"
-                loading="lazy"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyALB1YNVF9KvptNi0LDkAcljfKw-7oSEKs&q=Your+Business+Name,Nairobi+Kenya"
-              ></iframe>
+    <section className="py-20 px-4 md:py-32" ref={ref}>
+      <motion.div
+        className="container max-w-5xl mx-auto"
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
+        variants={containerVariants}
+      >
+        <div className="grid gap-8 md:gap-16">
+          {/* Header */}
+          <motion.div className="space-y-2" variants={itemVariants}>
+            <motion.h1 className="text-3xl md:text-4xl font-medium tracking-tight uppercase" variants={itemVariants}>
+              Contact
+            </motion.h1>
+            <motion.p className="text-muted-foreground max-w-[600px] uppercase text-xs" variants={itemVariants}>
+              Have questions about our products or services? We are here to help and answer any questions you might have.
+            </motion.p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-12 md:gap-16 -mt-5">
+            {/* Contact Form */}
+            <motion.div className="space-y-6" variants={itemVariants}>
+              <motion.div className="space-y-2" variants={itemVariants}>
+                <motion.h2 className="text-xl font-medium uppercase" variants={itemVariants}>
+                  Send a message
+                </motion.h2>
+              </motion.div>
+
+              <AnimatePresence mode="wait">
+                {status === "success" ? (
+                  <motion.div
+                    key="success"
+                    className="rounded-md border p-6 flex flex-col items-center justify-center text-center space-y-4 h-[320px]"
+                    variants={successVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <motion.div
+                      className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center"
+                      initial={{ scale: 0 }}
+                      animate={{
+                        scale: 1,
+                        transition: { delay: 0.2, type: "spring", stiffness: 200 },
+                      }}
+                    >
+                      <CheckCircle2 className="h-6 w-6 text-primary" />
+                    </motion.div>
+                    <motion.h3
+                      className="text-xl font-medium uppercase"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        transition: { delay: 0.3 },
+                      }}
+                    >
+                      Message sent
+                    </motion.h3>
+                    <motion.p
+                      className="text-muted-foreground text-xs uppercase"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        transition: { delay: 0.4 },
+                      }}
+                    >
+                      Thank you for reaching out. We will get back to you shortly.
+                    </motion.p>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        transition: { delay: 0.5 },
+                      }}
+                    >
+                      <Button variant="outline" onClick={() => setStatus("idle")} className="mt-2 uppercase">
+                        Send another message
+                      </Button>
+                    </motion.div>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="form"
+                    onSubmit={handleSubmit}
+                    className="space-y-4"
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <motion.div className="space-y-2 uppercase" variants={formItemVariants} custom={0}>
+                      <Label htmlFor="name">Name</Label>
+                      <Input
+                        id="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="Your name"
+                        required
+                        className="transition-all text-xs duration-200 focus:ring-2 focus:ring-primary/20"
+                      />
+                    </motion.div>
+                    <motion.div className="space-y-2 uppercase" variants={formItemVariants} custom={1}>
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="you@example.com"
+                        required
+                        className="transition-all text-xs duration-200 focus:ring-2 focus:ring-primary/20"
+                      />
+                    </motion.div>
+                    <motion.div className="space-y-2 uppercase" variants={formItemVariants} custom={2}>
+                      <Label htmlFor="message">Message</Label>
+                      <Textarea
+                        id="message"
+                        rows={4}
+                        value={formData.message}
+                        onChange={handleChange}
+                        placeholder="How can we help you?"
+                        required
+                        className="transition-all text-xs duration-200 focus:ring-2 focus:ring-primary/20"
+                      />
+                    </motion.div>
+                    <motion.div variants={formItemVariants} custom={3}>
+                      <Button type="submit" disabled={status === "loading"} className="w-full group">
+                        {status === "loading" ? (
+                          <span className="flex items-center">
+                            <svg
+                              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                            Sending...
+                          </span>
+                        ) : (
+                          <span className="flex items-center uppercase">
+                            Send message
+                            <motion.span
+                              className="ml-2 inline-block"
+                              initial={{ x: 0 }}
+                              whileHover={{ x: 4 }}
+                              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                            >
+                              <ArrowRight className="h-4 w-4" />
+                            </motion.span>
+                          </span>
+                        )}
+                      </Button>
+                    </motion.div>
+                    {status === "error" && (
+                      <motion.p
+                        className="text-sm text-red-500 mt-2"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                      >
+                        {error}
+                      </motion.p>
+                    )}
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </motion.div>
-          </motion.div>
-          <motion.div
-            className="bg-white p-8 rounded-2xl shadow-md"
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={containerVariants}
-          >
-            <ContactForm />
-          </motion.div>
+
+            {/* Contact Info */}
+            <motion.div className="space-y-8" variants={itemVariants}>
+              <motion.div className="space-y-2" variants={itemVariants}>
+                <motion.h2 className="text-xl font-medium uppercase" variants={itemVariants}>
+                  Contact information
+                </motion.h2>
+                <motion.p className="text-xs text-muted-foreground uppercase" variants={itemVariants}>
+                  Our team is available Monday through Friday from 9am to 5pm.
+                </motion.p>
+              </motion.div>
+
+              <motion.div className="space-y-6" variants={containerVariants}>
+                <motion.div
+                  className="flex items-start gap-4"
+                  variants={itemVariants}
+                  whileHover={{ x: 5 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <motion.div
+                    className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0"
+                    whileHover={{
+                      scale: 1.1,
+                      backgroundColor: "rgba(var(--primary), 0.2)",
+                    }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Mail className="h-5 w-5 text-primary" />
+                  </motion.div>
+                  <div>
+                    <h3 className="font-medium uppercase">Email us</h3>
+                    <p className="text-xs text-muted-foreground mt-1 uppercase">Our friendly team is here to help.</p>
+                    <motion.a
+                      href="mailto:hello@example.com"
+                      className="text-sm mt-2 inline-block text-primary "
+                      whileHover={{
+                        scale: 1.02,
+                        textDecoration: "underline",
+                      }}
+                    >
+                      hello@example.com
+                    </motion.a>
+                  </div>
+                </motion.div>
+
+                <Separator />
+
+                <motion.div
+                  className="flex items-start gap-4"
+                  variants={itemVariants}
+                  whileHover={{ x: 5 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <motion.div
+                    className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0"
+                    whileHover={{
+                      scale: 1.1,
+                      backgroundColor: "rgba(var(--primary), 0.2)",
+                    }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <MapPin className="h-5 w-5 text-primary" />
+                  </motion.div>
+                  <div>
+                    <h3 className="font-medium uppercase">Visit us</h3>
+                    <p className="text-xs text-muted-foreground mt-1 uppercase">Come say hello at our office.</p>
+                    <p className="text-sm mt-2">
+                      100 Main Street
+                      <br />
+                      Nairobi, Kenya
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-2">Open Monday-Friday, 9AM-5PM</p>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </div>
-  );
+      </motion.div>
+    </section>
+  )
 }
+

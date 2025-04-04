@@ -18,7 +18,7 @@ const Footer = () => {
             <Link href="https://instagram.com" className="text-xs uppercase tracking-wider hover:opacity-70 transition-opacity">
               Instagram
             </Link>
-            <Link href="mailto:info@stores.com" className="text-xs uppercase tracking-wider hover:opacity-70 transition-opacity">
+            <Link href="/contact" className="text-xs uppercase tracking-wider hover:opacity-70 transition-opacity">
               Contact
             </Link>
           </div>
