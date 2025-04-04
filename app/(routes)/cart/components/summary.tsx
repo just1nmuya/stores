@@ -499,8 +499,8 @@ const Summary = () => {
               onChange={(e) => setPaymentMethod(e.target.value)}
               className="w-full border border-black bg-transparent p-2 text-xs appearance-none"
             >
-              <option value="stripe">Credit Card</option>
-              <option value="mpesa">M-Pesa</option>
+              <option value="stripe">Stripe</option>
+              {/* <option value="mpesa">M-Pesa</option> */}
             </select>
           </div>
         </div>
