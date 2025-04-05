@@ -27,9 +27,11 @@ const Summary = () => {
   // Calculate total with shipping
   const totalPrice = subtotal + shippingCost;
 
+  const [customerEmail, setCustomerEmail] = useState("");
+
   useEffect(() => {
     if (searchParams.get("success")) {
-      toast.success("Payment completed.");
+      toast.success("Payment completed. A confirmation email has been sent.");
       setOrderComplete(true);
       removeAll();
     }
@@ -39,6 +41,10 @@ const Summary = () => {
   }, [searchParams, removeAll]);
 
   const onCheckout = async () => {
+    if (!customerEmail) {
+      toast.error("Please provide your email address.");
+      return;
+    }
     try {
       setIsSubmitting(true);
       const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/checkout/stripe`;
@@ -46,8 +52,9 @@ const Summary = () => {
       const payload = {
         productIds: items.map((item) => item.id),
         // We're still sending the totalPrice, but the backend will calculate it independently
-        amount: totalPrice,
-        orderId: `ORDER_${Date.now()}`,
+        // amount: totalPrice,
+        // orderId: `ORDER_${Date.now()}`,
+        customerEmail
       };
 
       const { data } = await axios.post(endpoint, payload, {
@@ -126,11 +133,11 @@ const Summary = () => {
             className="mt-6 p-4 border border-black"
           >
             <div className="flex flex-col items-center text-center gap-2">
-              <CheckCircle className="h-5 w-5 mb-1" />
-              <span className="text-sm font-medium">Order Complete</span>
-              <p className="text-xs text-muted-foreground">
-                Thank you for your purchase. You will receive an email
-                confirmation shortly.
+              <CheckCircle className="h-5 w-5 mb-1 text-green-500" />
+              <span className="text-sm uppercase font-medium">Order Complete</span>
+              <p className="text-xs uppercase text-muted-foreground">
+              Thank you for your purchase. You will receive an email
+              confirmation shortly.
               </p>
             </div>
           </motion.div>
@@ -162,6 +169,14 @@ const Summary = () => {
                 </div>
               </motion.div>
             )}
+
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={customerEmail}
+              onChange={(e) => setCustomerEmail(e.target.value)}
+              className="w-full p-2 border uppercase text-xs border-gray-300 rounded mb-4"
+            />
 
             <Button
               disabled={items.length === 0 || isSubmitting}
