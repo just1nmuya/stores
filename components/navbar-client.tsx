@@ -6,7 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ShoppingBag, X, Menu } from "lucide-react";
+import { ShoppingBag, X, Menu, Search } from "lucide-react";
 import useCart from "@/hooks/use-cart";
 // import MainNav from "./main-nav"
 
@@ -165,9 +165,22 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
 
         {/* Right Side Icons */}
         <div className="flex items-center space-x-6">
-          {/* <button className="hidden md:flex text-white">
+            <button
+            className="hidden md:flex text-black"
+            onClick={async () => {
+              try {
+              const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+              if (!res.ok) throw new Error("Unable to load featured products. Please try again later.");
+              const featuredProducts = await res.json();
+              console.log("Featured Products:", featuredProducts);
+              } catch (error) {
+              console.error(error);
+              }
+            }}
+            aria-label="Search featured products"
+            >
             <Search className="w-5 h-5" />
-          </button> */}
+            </button>
           <Link href="/cart" className="relative text-black">
             <ShoppingBag className="w-5 h-5" />
             {cart.items.length > 0 && (

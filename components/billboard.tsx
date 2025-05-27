@@ -127,14 +127,14 @@ interface BillboardProps {
 }
 
 const Billboard: React.FC<BillboardProps> = ({ data }) => (
-  <div className="relative overflow-hidden h-screen">
+  <div className="relative overflow-hidden w-screen h-screen">
     {/* Background Image */}
     <motion.div
       initial={{ scale: 1.05 }}
       animate={{ scale: 1 }}
       transition={{ duration: 8, ease: "easeOut" }}
       style={{ backgroundImage: `url(${data?.imageUrl})` }}
-      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+      className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
     />
 
     {/* Minimal Content Container */}
@@ -145,7 +145,7 @@ const Billboard: React.FC<BillboardProps> = ({ data }) => (
         transition={{ duration: 0.8, delay: 0.2 }}
         className="text-center max-w-3xl"
       >
-        <h1 className="text-4xl md:text-6xl lg:text-7xl uppercase tracking-wider font-normal text-white">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl uppercase tracking-wider font-bold text-white">
           {data.label}
         </h1>
       </motion.div>
