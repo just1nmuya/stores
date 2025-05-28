@@ -46,7 +46,7 @@ interface ProductListProps {
 const ProductList: React.FC<ProductListProps> = ({
   title,
   items,
-  gridClass = "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-12",
+  gridClass = "grid-cols-2 lg:grid-cols-6 gap-8 md:gap-12",
 }) => {
   return (
     <div className="space-y-8">
@@ -62,4 +62,3 @@ const ProductList: React.FC<ProductListProps> = ({
 }
 
 export default ProductList
-
