@@ -172,7 +172,7 @@ const Summary = () => {
 
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder="Enter your email to recieve confirmation"
               value={customerEmail}
               onChange={(e) => setCustomerEmail(e.target.value)}
               className="w-full p-2 border uppercase text-xs border-gray-300 rounded mb-4"
