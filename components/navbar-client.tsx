@@ -276,7 +276,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ShoppingBag, X, Menu, Search } from "lucide-react";
+import { ShoppingBag, X, Menu } from "lucide-react";
 import useCart from "@/hooks/use-cart";
 // import MainNav from "./main-nav"
 
@@ -448,7 +448,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
 
         {/* Right Side Icons */}
         <div className="flex items-center space-x-6">
-          <button
+          {/* <button
             className="hidden md:flex text-black"
             onClick={async () => {
               try {
@@ -463,7 +463,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
             aria-label="Search featured products"
           >
             <Search className="w-5 h-5" />
-          </button>
+          </button> */}
           <Link href="/cart" className="relative text-black">
             <ShoppingBag className="w-5 h-5" />
             {cart.items.length > 0 && (
