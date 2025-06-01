@@ -18,51 +18,64 @@ const Summary = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
 
+  // New: collect email, address, and phone
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [shippingAddress, setShippingAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
   // Calculate subtotal from cart items
   const subtotal = items.reduce((total, item) => total + Number(item.price), 0);
-
-  // Calculate shipping cost - free if subtotal > $150, otherwise $15
+  // Calculate shipping cost – free if subtotal > $150, otherwise $10
   const shippingCost = subtotal > 150 ? 0 : 10;
-
-  // Calculate total with shipping
   const totalPrice = subtotal + shippingCost;
-
-  const [customerEmail, setCustomerEmail] = useState("");
 
   useEffect(() => {
     if (searchParams.get("success")) {
-      toast.success("Payment completed. A confirmation email has been sent.");
+      if (!orderComplete) {
+        toast.success("Payment completed. A confirmation email has been sent.");
+      }
       setOrderComplete(true);
       removeAll();
     }
     if (searchParams.get("canceled")) {
       toast.error("Something went wrong");
     }
-  }, [searchParams, removeAll]);
+  }, [searchParams, removeAll, orderComplete]);
 
   const onCheckout = async () => {
+    // Validate that email, address, and phone are present
     if (!customerEmail) {
       toast.error("Please provide your email address.");
       return;
     }
+    if (!shippingAddress) {
+      toast.error("Please provide your shipping address.");
+      return;
+    }
+    if (!phoneNumber) {
+      toast.error("Please provide your phone number.");
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/checkout/stripe`;
 
+      // Send address & phone along with productIds and email
       const payload = {
         productIds: items.map((item) => item.id),
-        // We're still sending the totalPrice, but the backend will calculate it independently
-        // amount: totalPrice,
-        // orderId: `ORDER_${Date.now()}`,
-        customerEmail
+        customerEmail,
+        shippingAddress,
+        phoneNumber,
       };
 
+      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/checkout/stripe`;
       const { data } = await axios.post(endpoint, payload, {
         headers: { "Content-Type": "application/json" },
         withCredentials: false,
       });
 
       if (data?.url) {
+        // Redirect to Stripe Checkout
         window.location.href = data.url;
       } else {
         toast.error("Checkout URL not found");
@@ -81,7 +94,7 @@ const Summary = () => {
 
   return (
     <motion.div
-      className="bg-transparent border border-black p-6"
+      className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 max-w-md mx-auto mt-12"
       initial="hidden"
       animate="visible"
       variants={{
@@ -96,48 +109,50 @@ const Summary = () => {
         },
       }}
     >
-      <h2 className="text-xs uppercase tracking-wider font-normal mb-6 pb-4 border-b border-border">
+      <h2 className="text-lg md:text-xl font-bold uppercase mb-8 pb-4 border-b border-gray-200 text-center">
         Order Summary
       </h2>
 
-      <div className="space-y-4">
-        <div className="flex items-center justify-between py-2">
-          <span className="text-xs uppercase">Subtotal</span>
+      <div className="space-y-6 mb-8">
+        {/* Subtotal */}
+        <div className="flex items-center justify-between">
+          <span className="text-xs md:text-sm uppercase  text-gray-500">Subtotal</span>
           <Currency value={subtotal} />
         </div>
 
-        <div className="flex items-center justify-between py-2">
-          <div className="flex items-center">
-            <span className="text-xs uppercase">Shipping</span>
-            {shippingCost === 0 && (
-              <span className="ml-2 text-[10px] uppercase bg-black text-white px-1.5 py-0.5">
-                Free
-              </span>
+        {/* Shipping Cost */}
+        <div className="flex items-center justify-between">
+          <span className="text-xs md:text-sm uppercase  text-gray-500">Shipping</span>
+          <span>
+            {shippingCost === 0 ? (
+              <span className="bg-black text-white px-2 py-0.5 rounded-full text-xs uppercase">Free</span>
+            ) : (
+              <Currency value={shippingCost} />
             )}
-          </div>
-          <Currency value={shippingCost} />
+          </span>
         </div>
 
-        <div className="flex items-center justify-between py-2 border-t border-border font-medium">
-          <span className="text-xs uppercase">Total</span>
-          <Currency value={totalPrice} />
+        {/* Total */}
+        <div className="flex items-center justify-between border-t border-gray-200 pt-4 font-semibold text-base">
+          <span className="uppercase text-sm">Total</span>
+          <Currency value={totalPrice}/>
         </div>
       </div>
 
+      {/* If order already completed, show confirmation */}
       <AnimatePresence mode="wait">
         {orderComplete ? (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="mt-6 p-4 border border-black"
+            className="mt-6 p-4 border border-black rounded-xl bg-gray-50"
           >
             <div className="flex flex-col items-center text-center gap-2">
-              <CheckCircle className="h-5 w-5 mb-1 text-green-500" />
-              <span className="text-sm uppercase font-medium">Order Complete</span>
-              <p className="text-xs uppercase text-muted-foreground">
-              Thank you for your purchase. You will receive an email
-              confirmation shortly.
+              <CheckCircle className="h-6 w-6 mb-1 text-green-500" />
+              <span className="text-base  font-semibold">Order Complete</span>
+              <p className="text-xs text-gray-500">
+                Thank you for your purchase. You will receive an email confirmation shortly.
               </p>
             </div>
           </motion.div>
@@ -148,53 +163,75 @@ const Summary = () => {
             exit={{ opacity: 0, y: -10 }}
             className="mt-6"
           >
+            {/* “Add more to qualify for free shipping” indicator */}
             {subtotal < 150 && (
               <motion.div
-                className="mb-4 text-xs"
+                className="mb-6 text-xs text-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
               >
-                <p className="text-muted-foreground">
-                  Add <Currency value={150 - subtotal} /> more to qualify for
-                  free shipping
+                <p className="text-gray-500">
+                  Add <Currency value={150 - subtotal} /> more to qualify for free shipping
                 </p>
-                <div className="w-full bg-gray-100 h-1 mt-2">
+                <div className="w-full bg-gray-100 h-1 mt-2 rounded">
                   <motion.div
-                    className="bg-black h-1"
+                    className="bg-black h-1 rounded"
                     initial={{ width: 0 }}
-                    animate={{ width: `${(subtotal / 150) * 100}%` }}
+                    animate={{ width: `${Math.min(100, subtotal > 0 ? (subtotal / 150) * 100 : 0)}%` }}
                     transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
                   />
                 </div>
               </motion.div>
             )}
 
+            {/* New Input: Customer Email */}
+            <div className="mt-10">
+              <h2 className="text-lg md:text-xl font-bold uppercase mb-8 pb-4 border-b border-gray-200 text-center">Shipping Details</h2>
+            </div>
             <input
               type="email"
-              placeholder="Enter your email to recieve confirmation"
+              placeholder="Enter your email to receive confirmation"
               value={customerEmail}
               onChange={(e) => setCustomerEmail(e.target.value)}
-              className="w-full p-2 border uppercase text-xs border-gray-300 rounded mb-4"
+              className="w-full p-3 border border-gray-300 rounded-lg mb-4 text-sm font-normal"
+            />
+
+            {/* New Input: Shipping Address */}
+            <textarea
+              placeholder="Enter your shipping address"
+              value={shippingAddress}
+              onChange={(e) => setShippingAddress(e.target.value)}
+              rows={2}
+              className="w-full h-12 p-3 border border-gray-300 rounded-lg mb-2 text-sm font-normal resize-none"
+            />
+
+            {/* New Input: Phone Number */}
+            <input
+              type="tel"
+              placeholder="Enter your phone number"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg mb-6 text-sm font-normal"
             />
 
             <Button
               disabled={items.length === 0 || isSubmitting}
               onClick={onCheckout}
-              className="w-full group"
+              className="w-full py-3 text-base font-semibold bg-black text-white rounded-lg uppercase  hover:bg-gray-900 transition"
             >
               {isSubmitting ? (
-                <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                <Loader2 className="h-5 w-5 animate-spin mx-auto" />
               ) : (
-                <span className="flex items-center justify-center">
+                <span className="flex items-center justify-center gap-2">
                   Checkout
                   <motion.span
-                    className="ml-2 inline-block"
+                    className="inline-block"
                     initial={{ x: 0 }}
                     whileHover={{ x: 4 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="h-5 w-5" />
                   </motion.span>
                 </span>
               )}
@@ -207,4 +244,3 @@ const Summary = () => {
 };
 
 export default Summary;
-

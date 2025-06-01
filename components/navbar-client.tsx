@@ -1,3 +1,5 @@
+
+
 // "use client";
 
 // import type React from "react";
@@ -6,7 +8,7 @@
 // import { motion, AnimatePresence } from "framer-motion";
 // import { usePathname } from "next/navigation";
 // import { cn } from "@/lib/utils";
-// import { ShoppingBag, X, Menu, Search } from "lucide-react";
+// import { ShoppingBag, X, Menu } from "lucide-react";
 // import useCart from "@/hooks/use-cart";
 // // import MainNav from "./main-nav"
 
@@ -18,10 +20,36 @@
 // const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
 //   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 //   const [scrolled, setScrolled] = useState(false);
+//   const [showNavbar, setShowNavbar] = useState(true);
+//   const [lastScrollY, setLastScrollY] = useState(0);
 //   const pathname = usePathname();
 //   const cart = useCart();
 //   const [isOpen, setIsOpen] = useState(false);
 //   const dropdownRef = useRef<HTMLDivElement>(null);
+
+//   // Hide navbar on scroll down, show on scroll up
+//   useEffect(() => {
+//     let ticking = false;
+//     const handleScroll = () => {
+//       if (!ticking) {
+//         window.requestAnimationFrame(() => {
+//           const currentScrollY = window.scrollY;
+//           setScrolled(currentScrollY > 20);
+//           if (currentScrollY > lastScrollY && currentScrollY > 60) {
+//             setShowNavbar(false); // Hide on scroll down
+//           } else {
+//             setShowNavbar(true); // Show on scroll up
+//           }
+//           setLastScrollY(currentScrollY);
+//           ticking = false;
+//         });
+//         ticking = true;
+//       }
+//     };
+//     window.addEventListener("scroll", handleScroll);
+//     return () => window.removeEventListener("scroll", handleScroll);
+//     // eslint-disable-next-line
+//   }, [lastScrollY]);
 
 //   // Close dropdown when clicking outside
 //   useEffect(() => {
@@ -33,7 +61,6 @@
 //         setIsOpen(false);
 //       }
 //     }
-
 //     document.addEventListener("mousedown", handleClickOutside);
 //     return () => {
 //       document.removeEventListener("mousedown", handleClickOutside);
@@ -44,20 +71,6 @@
 //   useEffect(() => {
 //     setIsMobileMenuOpen(false);
 //   }, [pathname]);
-
-//   // Handle scroll effect
-//   useEffect(() => {
-//     const handleScroll = () => {
-//       if (window.scrollY > 20) {
-//         setScrolled(true);
-//       } else {
-//         setScrolled(false);
-//       }
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, []);
 
 //   // Prevent body scroll when mobile menu is open
 //   useEffect(() => {
@@ -71,17 +84,19 @@
 //     };
 //   }, [isMobileMenuOpen]);
 
-//   // Filter categories to only show main ones (removed unused variable)
-
 //   return (
 //     <motion.div
 //       initial={{ y: -100 }}
-//       animate={{ y: 0 }}
-//       transition={{ type: "spring", stiffness: 300, damping: 30 }}
+//       animate={{
+//         y: showNavbar ? 0 : -100,
+//         opacity: showNavbar ? 1 : 0,
+//         transition: { type: "spring", stiffness: 300, damping: 30 }
+//       }}
 //       className={cn(
 //         "fixed top-0 left-0 w-full z-50 transition-all duration-300 px-4 md:px-8 h-16",
 //         scrolled && "bg-white shadow-md"
 //       )}
+//       style={{ pointerEvents: showNavbar ? "auto" : "none" }}
 //     >
 //       <div className="max-w-[1400px] mx-auto relative flex items-center justify-between h-full">
 //         {/* Left Side Navigation */}
@@ -165,22 +180,22 @@
 
 //         {/* Right Side Icons */}
 //         <div className="flex items-center space-x-6">
-//             <button
+//           {/* <button
 //             className="hidden md:flex text-black"
 //             onClick={async () => {
 //               try {
-//               const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
-//               if (!res.ok) throw new Error("Unable to load featured products. Please try again later.");
-//               const featuredProducts = await res.json();
-//               console.log("Featured Products:", featuredProducts);
+//                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+//                 if (!res.ok) throw new Error("Unable to load featured products. Please try again later.");
+//                 const featuredProducts = await res.json();
+//                 console.log("Featured Products:", featuredProducts);
 //               } catch (error) {
-//               console.error(error);
+//                 console.error(error);
 //               }
 //             }}
 //             aria-label="Search featured products"
-//             >
+//           >
 //             <Search className="w-5 h-5" />
-//             </button>
+//           </button> */}
 //           <Link href="/cart" className="relative text-black">
 //             <ShoppingBag className="w-5 h-5" />
 //             {cart.items.length > 0 && (
@@ -278,7 +293,6 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ShoppingBag, X, Menu } from "lucide-react";
 import useCart from "@/hooks/use-cart";
-// import MainNav from "./main-nav"
 
 interface NavbarClientProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -288,36 +302,20 @@ interface NavbarClientProps {
 const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [showNavbar, setShowNavbar] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const cart = useCart();
-  const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Hide navbar on scroll down, show on scroll up
+  // Only show navbar at top of the page
   useEffect(() => {
-    let ticking = false;
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-          setScrolled(currentScrollY > 20);
-          if (currentScrollY > lastScrollY && currentScrollY > 60) {
-            setShowNavbar(false); // Hide on scroll down
-          } else {
-            setShowNavbar(true); // Show on scroll up
-          }
-          setLastScrollY(currentScrollY);
-          ticking = false;
-        });
-        ticking = true;
-      }
+      const atTop = window.scrollY < 20;
+      setScrolled(!atTop);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-    // eslint-disable-next-line
-  }, [lastScrollY]);
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -330,9 +328,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // Close mobile menu when route changes
@@ -356,15 +352,15 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
     <motion.div
       initial={{ y: -100 }}
       animate={{
-        y: showNavbar ? 0 : -100,
-        opacity: showNavbar ? 1 : 0,
-        transition: { type: "spring", stiffness: 300, damping: 30 }
+        y: scrolled ? -100 : 0,
+        opacity: scrolled ? 0 : 1,
+        transition: { type: "spring", stiffness: 300, damping: 30 },
       }}
       className={cn(
         "fixed top-0 left-0 w-full z-50 transition-all duration-300 px-4 md:px-8 h-16",
-        scrolled && "bg-white shadow-md"
+        !scrolled && "bg-transparent",
       )}
-      style={{ pointerEvents: showNavbar ? "auto" : "none" }}
+      style={{ pointerEvents: scrolled ? "none" : "auto" }}
     >
       <div className="max-w-[1400px] mx-auto relative flex items-center justify-between h-full">
         {/* Left Side Navigation */}
@@ -448,22 +444,6 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
 
         {/* Right Side Icons */}
         <div className="flex items-center space-x-6">
-          {/* <button
-            className="hidden md:flex text-black"
-            onClick={async () => {
-              try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
-                if (!res.ok) throw new Error("Unable to load featured products. Please try again later.");
-                const featuredProducts = await res.json();
-                console.log("Featured Products:", featuredProducts);
-              } catch (error) {
-                console.error(error);
-              }
-            }}
-            aria-label="Search featured products"
-          >
-            <Search className="w-5 h-5" />
-          </button> */}
           <Link href="/cart" className="relative text-black">
             <ShoppingBag className="w-5 h-5" />
             {cart.items.length > 0 && (
@@ -475,7 +455,7 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
         </div>
       </div>
 
-      {/* Mobile Menu - Simplified */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -495,19 +475,13 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
               className="fixed top-0 left-0 w-4/5 max-w-sm h-full bg-black text-white z-50 p-6 pt-20 shadow-2xl rounded-r-lg"
             >
               <div className="space-y-8">
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
+                <Link
+                  href="/shop"
+                  className="block uppercase text-xl font-semibold tracking-wide py-2 hover:text-gray-300 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Link
-                    href="/shop"
-                    className="block uppercase text-xl font-semibold tracking-wide py-2 hover:text-gray-300 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Shop
-                  </Link>
-                </motion.div>
+                  Shop
+                </Link>
 
                 <div className="space-y-4">
                   <div className="text-lg font-semibold text-gray-400 uppercase">
@@ -527,19 +501,13 @@ const NavbarClient: React.FC<NavbarClientProps> = ({ categories }) => {
                   </div>
                 </div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
+                <Link
+                  href="/info"
+                  className="block uppercase text-xl font-semibold tracking-wide py-2 hover:text-gray-300 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Link
-                    href="/info"
-                    className="block uppercase text-xl font-semibold tracking-wide py-2 hover:text-gray-300 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Info
-                  </Link>
-                </motion.div>
+                  Info
+                </Link>
               </div>
             </motion.div>
           </>
