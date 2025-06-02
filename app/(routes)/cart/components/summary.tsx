@@ -218,22 +218,27 @@ const Summary = () => {
             <Button
               disabled={items.length === 0 || isSubmitting}
               onClick={onCheckout}
-              className="w-full py-3 text-base font-semibold bg-black text-white rounded-lg uppercase  hover:bg-gray-900 transition"
+              className="w-full py-3 text-base font-semibold bg-black text-white rounded-lg uppercase transition-colors duration-200 hover:bg-purple-800 focus:bg-purple-700"
             >
               {isSubmitting ? (
-                <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+              <Loader2 className="h-5 w-5 animate-spin mx-auto" />
               ) : (
-                <span className="flex items-center justify-center gap-2">
-                  Checkout
-                  <motion.span
-                    className="inline-block"
-                    initial={{ x: 0 }}
-                    whileHover={{ x: 4 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  >
-                    <ArrowRight className="h-5 w-5" />
-                  </motion.span>
-                </span>
+              <span className="flex items-center justify-center gap-2 group">
+                Checkout
+                <motion.span
+                className="inline-block"
+                initial={{ x: 0, rotate: 0, scale: 1 }}
+                whileHover={{
+                  x: 8,
+                  rotate: 20,
+                  scale: 1.2,
+                  transition: { type: "spring", stiffness: 400, damping: 12 }
+                }}
+                whileTap={{ scale: 0.95 }}
+                >
+                <ArrowRight className="h-5 w-5 text-white group-hover:text-purple-200 transition-colors duration-200" />
+                </motion.span>
+              </span>
               )}
             </Button>
           </motion.div>
